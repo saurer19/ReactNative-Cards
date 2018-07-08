@@ -1,10 +1,14 @@
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, FlatList, StyleSheet } from "react-native";
 import { connect } from "react-redux";
+import { ListItem } from 'react-native-elements'
 import { receiveDecks } from "../actions";
 import { _retrieveData, _storeData } from "../utils/api";
 import { initialData } from "../utils/constants";
 class Dashboard extends React.Component {
+  static navigationOptions = {
+    title: 'Deck List',
+  };
   componentDidMount() {
     _retrieveData().then(data => {
       console.log("data:", data);
@@ -17,9 +21,6 @@ class Dashboard extends React.Component {
         this.props.dispatch(receiveDecks(data));
       }
     });
-
-    console.log(this.props.decks);
-    console.log(this.props.navigation);
   }
 
   render() {
@@ -33,18 +34,28 @@ class Dashboard extends React.Component {
     }
     return (
       <View>
-        <Text>{Object.keys(decks)}</Text>
-        <Text>{Object.keys(decks).length}</Text>
+        <Text style={styles.title}>Select a Deck</Text>
         <FlatList
           data={Object.keys(decks)}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => navigation.navigate("CardTabs", decks[item])}
-            >
-              <Text>{decks[item].title}</Text>
-              <Text>{decks[item].questions.length}</Text>
-            </TouchableOpacity>
-          )}
+          renderItem={({ item }) => {
+            const badge = {
+              value: `${decks[item].questions.length}`,
+              badgeContainerStyle: { right: 10, backgroundColor: '#56579B' },
+              badgeTextStyle: { fontSize: 12 },
+            };
+
+            return(
+              <ListItem
+              hideChevron
+              title={decks[item].title}
+              badge={badge}
+              containerStyle={{ backgroundColor: 'white', }}
+              onPress={() => navigation.navigate("CardTabs", {deck:decks[item]})}
+              titleStyle={styles.items}
+            />
+            )
+
+          }}
           keyExtractor={item => decks[item].title}
         />
       </View>
@@ -52,11 +63,21 @@ class Dashboard extends React.Component {
   }
 }
 
-function maptStateToProps(state) {
+function mapStateToProps(state) {
   console.log("state", state);
   return {
     decks: state
   };
 }
+const styles = StyleSheet.create({
+  title: {
+    fontSize: 24,
+    margin: 20,
+  },
+  items:{
+    fontSize: 18,
+    margin: 15,
+  }
 
-export default connect(maptStateToProps)(Dashboard);
+});
+export default connect(mapStateToProps)(Dashboard);

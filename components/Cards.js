@@ -1,7 +1,14 @@
 import React from "react";
-import { View, Text, Button } from "react-native";
-
+import { View, Text, StyleSheet } from "react-native";
+import { Button } from "react-native-elements";
 export default class Cards extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    const { title } = navigation.state.params;
+
+    return {
+      title: title
+    };
+  };
   constructor(props) {
     super(props);
     this.state = {
@@ -16,57 +23,78 @@ export default class Cards extends React.Component {
     });
   };
   render() {
-    const { questions, title } = this.props.navigation.state.params;
+    const { questions } = this.props.navigation.state.params;
     const { count, showAnswer } = this.state;
+    const {navigate} = this.props.navigation
+
     if (count === questions.length) {
-      console.log("aqui");
       return (
-        <View>
-          <Text>You finish the quizz</Text>
+        <View  style={{ flex: 1 }}>
+        <View style={{ flex: 2 }}>
+          <Text style={styles.title}>You finish the quizz</Text>
+          </View>
+          <View  style={{ flex: 2 }}>
           <Button
-            onPress={() => console.log("hola")}
-            color="blue"
+            onPress={() => navigate('DeckDetail')}
+            backgroundColor="blue"
             title="Back"
           />
+          </View>
+          
         </View>
       );
     } else {
       return (
-        <View>
-          <Text>{title}</Text>
-          <Text>
-            {count + 1}/{questions.length}
-          </Text>
-          {showAnswer ? (
-            <View>
-              <Text>{questions[count].answer}</Text>
+        <View  style={{ flex: 1 }}>
+          <View style={{ flex: 2 }}>
+            <Text style={styles.count}>
+              {count + 1}/{questions.length}
+            </Text>
+            {showAnswer ? (
+              <Text style={styles.title}>{questions[count].answer}</Text>
+            ) : (
+              <Text style={styles.title}>{questions[count].question}</Text>
+            )}
+          </View>
+          <View style={{ flex: 2 }}>
+            {showAnswer ? (
               <Button
                 onPress={() => this.setState({ showAnswer: false })}
                 title="Show Question"
-                color="blue"
-                accessibilityLabel="Press this button"
+                backgroundColor="blue"
+                large
               />
-            </View>
-          ) : (
-            <View>
-              <Text>{questions[count].question}</Text>
+            ) : (
               <Button
                 onPress={() => this.setState({ showAnswer: true })}
                 title="Show Answer"
-                color="blue"
-                accessibilityLabel="Press this button"
+                backgroundColor="blue"
+                large
               />
+            )}
+            <View style={{paddingTop:20}}>
+            <Button
+              onPress={this.next}
+              title="Next"
+              backgroundColor="green"
+              large
+            />
             </View>
-          )}
-
-          <Button
-            onPress={this.next}
-            title="Next"
-            color="blue"
-            accessibilityLabel="Press this button"
-          />
+            
+          </View>
         </View>
       );
     }
   }
 }
+const styles = StyleSheet.create({
+
+  title: {
+    fontSize: 24,
+    margin: 20
+  },
+  count: {
+    fontSize: 18,
+    margin: 15
+  }
+});
