@@ -20,8 +20,8 @@ import {Button } from "react-native-elements";
     return (
       <View style={styles.container}>
         <View style={styles.spaces}>
-        <Text>{deck.title}</Text>
-        <Text>{deck.questions.length}</Text>
+        <Text style={styles.title}>{deck.title}</Text>
+        <Text style={styles.cards}>{deck.questions.length} Cards</Text>
         </View>
         
         <View style={styles.spaces}>
@@ -30,7 +30,7 @@ import {Button } from "react-native-elements";
           backgroundColor="#2089DC"
           onPress={() => navigate('Cards', deck)}
           large
-          title="Start Quizz"
+          title="Start Quiz"
         />
         </View>
         <View style={styles.spaces}>
@@ -38,7 +38,7 @@ import {Button } from "react-native-elements";
           backgroundColor="red"
           onPress={() => navigate('Dashboard')}
           
-          title="Go Back"
+          title="Back"
         />
         </View>
         
@@ -52,12 +52,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  title: {
+    fontSize: 28,
+    margin: 20
+  },
+  cards: {
+    fontSize: 18,
+    margin: 15,
+    color:'grey'
+  },
   spaces:{
     flex:2,
     justifyContent: "center",
     alignItems: "center"
   }
 });
+
 
 function mapStateToProps(state,{navigation}) {
   const { deck } = navigation.state.params
